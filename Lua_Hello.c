@@ -38,13 +38,6 @@ int main() {
 	STDOUT_FILENO = UART1_FILENO;
 	printf("Hello from %s!\n", "PICo24");
 
-	// Initialize USB device config
-	USBDeluxe_Device_ConfigInit(0x04d8, 0xe966, "SudoMaker", "PotatoPi PICo24", "123");
-	// Apply USB device config
-	USBDeluxe_Device_ConfigApply();
-	// Set USB to DEVICE mode
-	USBDeluxe_SetRole(USB_ROLE_DEVICE);
-
 	lua_State *L = luaL_newstate();
 	printf("luaL_newstate done\n");
 

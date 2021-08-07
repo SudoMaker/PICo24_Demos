@@ -7,7 +7,7 @@ project(PICo24_Demo C ASM)
 #set(XC16_DISABLE_DEFAULT_LINKER_SCRIPT 1)
 #include(CMake/FindXC16.cmake)
 
-add_compile_options(-std=c99 -O2 -mlarge-code -mlarge-data -mlarge-scalar)
+add_compile_options(-std=gnu99 -O2 -mlarge-code -mlarge-data -mlarge-scalar)
 #add_link_options(-Wl,--gc-sections,--no-select-objects,--heap=0,--stack=128)
 
 
@@ -37,20 +37,14 @@ CPMAddPackage(
         GITHUB_REPOSITORY SudoMaker/PICo24
         VERSION 0.0.2
         GIT_SHALLOW ON
-        GIT_TAG d01951fab301f0389f64f10f900426b1624d70ac
+        GIT_TAG 4ac0ebdc6d9ce02ed2c6330a89d3c79c31bbb70f
 )
 
-#include(${PICo24_SOURCE_DIR}/CMakeLists.txt)
-
-set(PICo24_Board PotatoPi_PICo24)
-pico24_use_board(${PICo24_Board})
-pico24_enable_freertos()
-
-pico24_enable_peripherals(UART SPI TIMER USB_DEVICE USB_HOST USB_DEVICE_CDC_ACM)
+message("-- PICo24 Source ssDir: ${PICo24_SRC_DIR}")
 
 function(add_demo NAME FILES)
     add_executable(PICo24_Demo_${NAME} ${FILES})
-    target_link_libraries(PICo24_Demo_${NAME} PICo24_Board_${PICo24_Board} PICo24_Core PICo24_Lua lwipcore lwipallapps)
+    pico24_target_configure(PICo24_Demo_${NAME} "PotatoPi_PICo24" "UART;SPI;TIMER;USB_DEVICE;USB_HOST;USB_DEVICE_CDC_ACM;USB_DEVICE_MSD" "FreeRTOS")
 
     set(HEX_FILE ${PROJECT_BINARY_DIR}/PICo24_Demo_${NAME}.hex)
 
@@ -60,5 +54,6 @@ function(add_demo NAME FILES)
 endfunction()
 
 add_demo(RetroWave_USB RetroWave_USB.c)
-add_demo(Lua_Hello Lua_Hello.c)
 add_demo(LwIP_PPP LwIP_PPP.c)
+add_demo(MSD_16x MSD_16x.c)
+add_demo(Lua_Hello Lua_Hello.c)
